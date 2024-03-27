@@ -52,15 +52,24 @@ namespace MyLog
     #define ERROR       myLog.Error
 
     /**
+     * @brief 获取当前的时间
      * 
+     * @return 时间字符串，格式为: Month/Day/Year Hour/Minute/Second
     */
     std::string getCurrentTime()
     {
         char timeStringBuffer[30] = {"0"};
+
+        /* 获取当前的时间戳 */
         std::time_t timeStamp = std::time(nullptr);
 
+        /*
+            将时间戳转化为字符串，
+            存入 timeStringBuffer 之中
+        */
         std::strftime(timeStringBuffer, sizeof(timeStringBuffer), "%c", std::localtime(&timeStamp));
 
+        /* 最后交给 std::string 构造并返回 */
         return std::string(timeStringBuffer);
     }
 
