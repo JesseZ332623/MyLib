@@ -1,5 +1,5 @@
-#ifndef _MY_SLEEP_H_
-#define _MY_SLEEP_H_
+#ifndef _MY_DELAY_H_
+#define _MY_DELAY_H_
 
 #include <time.h>
 
@@ -12,8 +12,6 @@ namespace MyDelay
      * 
      * @return non-return
     */
-    static void delay(long int __millisSeconds);
-
     static void delay(long int __millisSeconds)
     {
         clock_t startTime = clock();
@@ -22,4 +20,4 @@ namespace MyDelay
     }
 }
 
-#endif // _MY_SLEEP_H_
+#endif // _MY_DELAY_H_
