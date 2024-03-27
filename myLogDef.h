@@ -1,11 +1,11 @@
-#ifndef _TERMINAL_COLOR_H_
-#define _TERMINAL_COLOR_H_
+#ifndef _MYLOGDEF_H_
+#define _MYLOGDEF_H_
 
 #include <iostream>
+#include <ctime>
 
 namespace MyLog
 {
-
     enum ColorMenu { RED = 1, GREEN, YELLO, BLUE = 6, WHITE };
 
     class TerminalTextColor
@@ -14,7 +14,11 @@ namespace MyLog
             int colorCode {0};
 
         public:
-            TerminalTextColor(const int __colorSign) : colorCode(__colorSign) {}
+            explicit TerminalTextColor(const int __colorSign) : colorCode(__colorSign) {}
+
+            const int getColorCode(void) const { return colorCode; }
+
+            bool operator==(const TerminalTextColor & __b) const { return (this->getColorCode() == __b.getColorCode()); }
 
             friend std::ostream & operator<<(std::ostream & __os, const TerminalTextColor & __colorSign)
             {
@@ -30,12 +34,12 @@ namespace MyLog
 
     typedef struct LogLevel
     {
-        public:
-            TerminalTextColor Original{WHITE};
-            TerminalTextColor Notify{BLUE};
-            TerminalTextColor Warning{YELLO};
-            TerminalTextColor Correct{GREEN};
-            TerminalTextColor Error{RED};
+        TerminalTextColor Original  {WHITE};
+        TerminalTextColor Notify    {BLUE};
+        TerminalTextColor Warning   {YELLO};
+        TerminalTextColor Correct   {GREEN};
+        TerminalTextColor Error     {RED};
+
     } MyLog;
 
     /*一个简单的日志库，用于不同类型消息的输出*/
@@ -48,20 +52,47 @@ namespace MyLog
     #define ERROR       myLog.Error
 
     /**
+     * 
+    */
+    std::string getCurrentTime()
+    {
+        char timeStringBuffer[30] = {"0"};
+        std::time_t timeStamp = std::time(nullptr);
+
+        std::strftime(timeStringBuffer, sizeof(timeStringBuffer), "%c", std::localtime(&timeStamp));
+
+        return std::string(timeStringBuffer);
+    }
+
+    /**
      * @brief 用户可以通过该函数简便的使用该日志库
      * 
      * @tparam OutPutType 需要输出的类型
      * 
+     * @param __os          标准输出流的引用
      * @param __logLevel    日志等级
-     * @param __out         要输出的数据
-     * @param __os          标准输出流
+     * @param __out         要输出的数据，会被打包成形参包
      * 
      * @return              non-return
     */
-    template <typename OutPutType>
-    static inline void log(const TerminalTextColor & __logLevel, const OutPutType & __out, std::ostream & __os = std::cout)
+    template <typename ...OutPutType>
+    static inline void log(std::ostream & __os, const TerminalTextColor  __logLevel, OutPutType ... __out)
     {
-        __os << __logLevel << __out << ORIGINAL << std::endl;
+        __os << __logLevel;
+
+        if (__logLevel == WARNING || __logLevel == ERROR)
+        {
+            __os << '[' << getCurrentTime() << ']';
+        }
+
+        /**
+         * 通过 C++17 标准推出的折叠表达式功能，可以将形参包解包然后依次完美转发，
+         * 逐个向标准输出流发送数据。
+        */
+        (void)(__os << ... << std::forward<OutPutType>(__out));
+        
+        __os.flush();
+        __os << ORIGINAL;
     }
 
     /**
@@ -69,7 +100,7 @@ namespace MyLog
     * 
     * @param __len      分割线的长度
     * @param __style    分割线的风格，如（------- ****** 或 ·········）
-    * @param __os       标准输出流
+    * @param __os       标准输出流的引用
     * 
     * @return           non-return
     */
@@ -79,4 +110,4 @@ namespace MyLog
     }
 }
 
-#endif  // _TERMINAL_COLOR_H_
+#endif  // _MYLOGDEF_H_
