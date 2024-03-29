@@ -32,24 +32,17 @@ namespace MyLog
             }
     };
 
-    typedef struct LogLevel
+    const TerminalTextColor defaultLogLevel [] = 
     {
-        TerminalTextColor Original  {WHITE};
-        TerminalTextColor Notify    {BLUE};
-        TerminalTextColor Warning   {YELLO};
-        TerminalTextColor Correct   {GREEN};
-        TerminalTextColor Error     {RED};
+        TerminalTextColor(WHITE), TerminalTextColor(BLUE), TerminalTextColor(YELLO),
+        TerminalTextColor(GREEN), TerminalTextColor(RED)
+    };
 
-    } MyLog;
-
-    /*一个简单的日志库，用于不同类型消息的输出*/
-    const MyLog myLog;
-
-    #define ORIGINAL    myLog.Original
-    #define NOTIFY      myLog.Notify
-    #define WARNING     myLog.Warning
-    #define CORRECT     myLog.Correct
-    #define ERROR       myLog.Error
+    #define ORIGINAL    defaultLogLevel[0]
+    #define NOTIFY      defaultLogLevel[1]
+    #define WARNING     defaultLogLevel[2]
+    #define CORRECT     defaultLogLevel[3]
+    #define ERROR       defaultLogLevel[4]
 
     /**
      * @brief 获取当前的时间
