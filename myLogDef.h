@@ -84,7 +84,7 @@ namespace MyLog
 
         if (__logLevel == WARNING || __logLevel == ERROR)
         {
-            __os << '[' << getCurrentTime() << ']';
+            __os << '[' << getCurrentTime() << ']' << ' ';
         }
 
         /**
