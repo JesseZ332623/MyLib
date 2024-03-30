@@ -12,10 +12,6 @@ namespace MyLib
 {
     namespace SimpleContainerOperator
     {
-
-        using namespace MyDelay;
-        using namespace MyLog;
-
         /**
          * @brief 往指定标准输出流发送 Container 容器的相关信息和数据（只适用于元素为数字类型的 STL 容器）。
          * 
@@ -29,6 +25,8 @@ namespace MyLib
         template <typename Container>
         void showContainerToStream(std::ostream & __os, const Container & __container)
         {
+            using namespace MyLog;
+            using MyDelay::delay;
 
             log(__os, NOTIFY, "This Container size = ", __container.size(), '\n');
 
