@@ -51,7 +51,7 @@ namespace MyLib
          * 
          * @return 时间字符串，格式为: Month/Day/Year Hour/Minute/Second
         */
-        std::string getCurrentTime()
+        std::string getCurrentTime(void)
         {
             char timeStringBuffer[30] = {"0"};
 
