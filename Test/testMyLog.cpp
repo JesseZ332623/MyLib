@@ -6,6 +6,7 @@
 #include <climits>
 #include <fstream>
 
+using namespace MyLib;
 static std::size_t TIMES = 0L;
 
 const char FILE_PATH[] = {"./exitedTimes.dat"};
