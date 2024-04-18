@@ -69,7 +69,7 @@ namespace MyLib
         }
 
         /**
-         * @brief 用户可以通过该函数简便的使用该日志库
+         * @brief 用户可以通过该函数简便的使用该日志库（函数名使用 loger 避免和 std::log 混淆）
          * 
          * @tparam OutPutType 需要输出的类型
          * 
@@ -80,7 +80,7 @@ namespace MyLib
          * @return              non-return
         */
         template <typename ...OutPutType>
-        static inline void log(std::ostream & __os, const TerminalTextColor  __logLevel, OutPutType ... __out)
+        static inline void loger(std::ostream & __os, const TerminalTextColor  __logLevel, OutPutType ... __out)
         {
             __os << __logLevel;
 
