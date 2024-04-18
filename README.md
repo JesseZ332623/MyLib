@@ -92,7 +92,7 @@ template <typename Container>
 void showContainerToStream(std::ostream &__os, const Container &__container)
 {
 
-    log(__os, NOTIFY, "This Container size = ", __container.size(), '\n');
+    loger(__os, NOTIFY, "This Container size = ", __container.size(), '\n');
 
     std::size_t containerIndex = 0L;
 
