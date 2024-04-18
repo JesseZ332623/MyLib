@@ -1,4 +1,4 @@
-#include "../myLogDef.h"
+#include "../myLogerDef.h"
 #include "../myDelay.h"
 #include <cstdlib>
 #include <ctime>
@@ -27,7 +27,7 @@ void endSignalHandle(int __signalIndex)
 	
 	if (!writeStream.is_open()) 
 	{ 
-		MyLog::log(std::cerr, MyLog::ERROR, "Can't Open File: ", FILE_PATH, '\n');  
+		MyLoger::loger(std::cerr, MyLoger::ERROR, "Can't Open File: ", FILE_PATH, '\n');  
 		std::exit(EXIT_FAILURE);
 	}
 
@@ -36,9 +36,9 @@ void endSignalHandle(int __signalIndex)
 	writeStream.close();
 	
 	/* 报告写入完毕的消息后正式退出程序 */
-	MyLog::printSplitLine(35, '-');
-	MyLog::log(std::cout, MyLog::NOTIFY, "The log write to the file: [", FILE_PATH, "] Current times = ", TIMES, '\n');
-	MyLog::log(std::cout, MyLog::CORRECT, "Done.\n");
+	MyLoger::printSplitLine(35, '-');
+	MyLoger::loger(std::cout, MyLoger::NOTIFY, "The loger write to the file: [", FILE_PATH, "] Current times = ", TIMES, '\n');
+	MyLoger::loger(std::cout, MyLoger::CORRECT, "Done.\n");
 	std::exit(EXIT_SUCCESS);
 }
 
@@ -48,7 +48,7 @@ int main(int argc, char const *argv[])
 
 	std::signal(SIGINT, endSignalHandle);
 	std::srand(std::time(nullptr));
-	using namespace MyLog;
+	using namespace MyLoger;
 
 	/*
 		在程序目录下创建一个名为 exitedTimes.dat 的数据文件，
@@ -57,7 +57,7 @@ int main(int argc, char const *argv[])
 	std::fstream readStream(FILE_PATH, std::ios_base::in | std::ios_base::binary | std::ios_base::app);
 	if (!readStream.is_open()) 
 	{ 
-		MyLog::log(std::cerr, MyLog::ERROR, "Can't Open File: ", FILE_PATH, '\n'); 
+		MyLoger::loger(std::cerr, MyLoger::ERROR, "Can't Open File: ", FILE_PATH, '\n'); 
 		std::exit(EXIT_FAILURE); 
 	}
 
@@ -75,7 +75,7 @@ int main(int argc, char const *argv[])
 	*/
 	while (true) 
 	{ 
-		MyLog::log(std::cout, defaultLogLevel[std::rand() % 5], "Show message ", ++TIMES, " Times!\n");  
+		MyLoger::loger(std::cout, defaultLogLevel[std::rand() % 5], "Show message ", ++TIMES, " Times!\n");  
 		MyDelay::delay(45);
 
 		if (TIMES % 200 == 0) { system("cls"); }
@@ -86,11 +86,11 @@ int main(int argc, char const *argv[])
 		else if (TIMES == ULLONG_MAX) { break; }
 	}
 
-	MyLog::log(std::clog, WARNING, "The times was fulled. Final Times = ", TIMES, '\n');
-	MyLog::log(std::clog, NOTIFY, "PRESS ANY KEY TO QUIT: ");
+	MyLoger::loger(std::clog, WARNING, "The times was fulled. Final Times = ", TIMES, '\n');
+	MyLoger::loger(std::clog, NOTIFY, "PRESS ANY KEY TO QUIT: ");
 	std::getchar();
 
-	MyLog::log(std::clog, CORRECT, "Done.\n");
+	MyLoger::loger(std::clog, CORRECT, "Done.\n");
 
 	return EXIT_SUCCESS;
 }
