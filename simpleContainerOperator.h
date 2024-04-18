@@ -2,7 +2,7 @@
 #define _SIMPLE_CONTAINER_OPERATOR_H_
 
 #include "./myDelay.h"
-#include "./myLogDef.h"
+#include "./myLogerDef.h"
 
 #include <iterator>
 #include <algorithm>
@@ -25,7 +25,7 @@ namespace MyLib
         template <typename Container>
         void showContainerToStream(std::ostream & __os, const Container & __container)
         {
-            using namespace MyLog;
+            using namespace MyLoger;
             using MyDelay::delay;
 
             log(__os, NOTIFY, "This Container size = ", __container.size(), '\n');
