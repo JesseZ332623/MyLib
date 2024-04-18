@@ -3,6 +3,7 @@
 |日期|新增或改进|
 |---|---|
 |2024.3.30|1. 增加了一个对元素为数字类型的 STL 容器进行测试的新库 `simpleContainerOperator`。<br> 2. 将所有的库都放入 `MyLib` 命名空间之中|
+|2024.4.18|1. 修改函数名为 loger 避免和 std::log 混淆|
 
 ## `myLogDef` 一个简易的日志库
 
@@ -13,7 +14,7 @@
 
 ```C++
 /**
- * @brief 用户可以通过该函数简便的使用该日志库
+ * @brief 用户可以通过该函数简便的使用该日志库（函数名使用 loger 避免和 std::log 混淆）
  *
  * @tparam OutPutType 需要输出的类型
  *
@@ -24,7 +25,7 @@
  * @return              non-return
  */
 template <typename... OutPutType>
-static inline void log(std::ostream &__os, const TerminalTextColor __logLevel, OutPutType... __out)
+static inline void loger(std::ostream &__os, const TerminalTextColor __logLevel, OutPutType... __out)
 {
     __os << __logLevel;
 
