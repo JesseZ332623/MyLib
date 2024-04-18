@@ -6,7 +6,7 @@
 
 namespace MyLib
 {
-    namespace MyLog
+    namespace MyLoger
     {
         enum ColorMenu { RED = 1, GREEN, YELLO, BLUE = 6, WHITE };
 
