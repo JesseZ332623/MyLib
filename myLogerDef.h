@@ -2,6 +2,7 @@
 #define _MYLOGDEF_H_
 
 #include <iostream>
+#include <string>
 #include <ctime>
 
 namespace MyLib
@@ -51,7 +52,7 @@ namespace MyLib
          * 
          * @return 时间字符串，格式为: Month/Day/Year Hour/Minute/Second
         */
-        std::string getCurrentTime(void)
+        static inline std::string getCurrentTime(void)
         {
             char timeStringBuffer[30] = {"0"};
 
@@ -98,6 +99,13 @@ namespace MyLib
             __os.flush();
             __os << ORIGINAL;
         }
+
+        #define ORIGINAL_LOG(__message)     loger(std::cout, ORIGINAL, __message);
+        #define CORRECT_LOG(__message)      loger(std::cout, CORRECT, __message);
+        #define NOTIFY_LOG(__message)       loger(std::cout, NOTIFY, __message);
+        #define WARNING_LOG(__message)      loger(std::clog, WARNING, __message);
+        #define ERROR_LOG(__message)        loger(std::cerr, ERROR, __message);
+        #define DONE                        loger(std::cerr, CORRECT, "Done.\n");
 
         /**
         * @brief            这个函数可以打印不同风格的分割线
