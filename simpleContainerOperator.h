@@ -17,27 +17,28 @@ namespace MyLib
          * 
          * @tparam Container STL 容器类型
          * 
-         * @param __os          标准输出流的引用
-         * @param __container   要发送给输出流的容器的引用
+         * @param __os              标准输出流的引用
+         * @param __container       要发送给输出流的容器的引用
+         * @param __eachLineCount   每一行输出 `__eachLineCount` 个元素后换行，默认为 5
          * 
          * @return non-return
         */
         template <typename Container>
-        void showContainerToStream(std::ostream & __os, const Container & __container)
+        void showContainerToStream(std::ostream & __os, const Container & __container, std::size_t __eachLineCount = 5)
         {
             using namespace MyLoger;
             using MyDelay::delay;
 
-            log(__os, NOTIFY, "This Container size = ", __container.size(), '\n');
+            loger(__os, NOTIFY, "This Container size = ", __container.size(), '\n');
 
             std::size_t containerIndex = 0L;
 
             std::for_each(__container.cbegin(), __container.cend(), 
-                        [& __os, & containerIndex](const decltype((*__container.cbegin())) & n) 
+                        [& __os, &containerIndex, &__eachLineCount](const decltype((*__container.cbegin())) & n) 
                         { 
                                 __os << n << ' '; 
                                 delay(45); 
-                                if (containerIndex % 5 == 4) { __os << std::endl; }
+                                if (containerIndex % __eachLineCount == __eachLineCount - 1) { __os << std::endl; }
                                 ++containerIndex;
                         }
                         );
