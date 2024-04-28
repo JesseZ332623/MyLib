@@ -3,7 +3,8 @@
 |日期|新增或改进|
 |---|---|
 |2024.3.30|1. 增加了一个对元素为数字类型的 STL 容器进行测试的新库 `simpleContainerOperator`。<br> 2. 将所有的库都放入 `MyLib` 命名空间之中|
-|2024.4.18|1. 修改函数名为 loger 避免和 std::log 混淆|
+|2024.4.18|1. 修改函数名为 `loger` 避免和 `std::log` 混淆|
+|2024.4.28|1. 在 `myLogerDef.h` 上增加了几个预设宏函数，可以完成简单的日志操作，避免频繁使用 `loger` 函数的繁琐|
 
 ## `myLogDef` 一个简易的日志库
 
@@ -48,6 +49,19 @@ static inline void loger(std::ostream &__os, const TerminalTextColor __logLevel,
 }
 ```
 
+### 几个预设的宏函数
+
+它们可以往标准输出发送不同日志等级的字符流，避免频繁调用 `loger` 函数。
+
+```C++
+#define ORIGINAL_LOG(__message)     loger(std::cout, ORIGINAL, __message);
+#define CORRECT_LOG(__message)      loger(std::cout, CORRECT, __message);
+#define NOTIFY_LOG(__message)       loger(std::cout, NOTIFY, __message);
+#define WARNING_LOG(__message)      loger(std::clog, WARNING, __message);
+#define ERROR_LOG(__message)        loger(std::cerr, ERROR, __message);
+#define DONE                        loger(std::cerr, CORRECT, "Done.\n");
+```
+
 ## `myDelay` 简易的延时函数
 
 通过 `clock()` 以及 `while` 循环消耗掉用户指定的时间以达到延时的效果，
@@ -83,25 +97,28 @@ static void delay(long int __millisSeconds)
  *
  * @tparam Container STL 容器类型
  *
- * @param __os          标准输出流的引用
- * @param __container   要发送给输出流的容器的引用
+ * @param __os              标准输出流的引用
+ * @param __container       要发送给输出流的容器的引用
+ * @param __eachLineCount   每一行输出 `__eachLineCount` 个元素后换行，默认为 5
  *
  * @return non-return
  */
 template <typename Container>
-void showContainerToStream(std::ostream &__os, const Container &__container)
+void showContainerToStream(std::ostream &__os, const Container &__container, std::size_t __eachLineCount = 5)
 {
+    using namespace MyLoger;
+    using MyDelay::delay;
 
     loger(__os, NOTIFY, "This Container size = ", __container.size(), '\n');
 
     std::size_t containerIndex = 0L;
 
     std::for_each(__container.cbegin(), __container.cend(),
-                  [&__os, &containerIndex](const decltype((*__container.cbegin())) &n)
+                  [&__os, &containerIndex, &__eachLineCount](const decltype((*__container.cbegin())) &n)
                   {
                       __os << n << ' ';
                       delay(45);
-                      if (containerIndex % 5 == 4)
+                      if (containerIndex % __eachLineCount == __eachLineCount - 1)
                       {
                           __os << std::endl;
                       }
