@@ -4,9 +4,9 @@
 |---|---|
 |2024.3.30|1. 增加了一个对元素为数字类型的 STL 容器进行测试的新库 `simpleContainerOperator`。<br> 2. 将所有的库都放入 `MyLib` 命名空间之中|
 |2024.4.18|1. 修改函数名为 `loger` 避免和 `std::log` 混淆|
-|2024.4.28|1. 在 `myLogerDef.h` 上增加了几个预设宏函数，可以完成简单的日志操作，避免频繁使用 `loger` 函数的繁琐|
+|2024.4.28|1. 在 `myLogerDef.h` 上增加了几个预设宏函数，可以完成简单的日志操作，避免频繁使用 `loger` 函数的繁琐 <br> 2. 增加一个新库：`cinCheck.h` 用于对 C++ 标准输入流 `std::cin` 进行检查|
 
-## `myLogDef` 一个简易的日志库
+## `myLogDef.h` 一个简易的日志库
 
 能完成基本的日志功能，原理就是将字符串拼凑成 `ANSI` 转义序列发送到标准输出流，
 从而改变文本颜色，在 `Windwos` 和 `Linux` 操作系统的终端均可使用。
@@ -86,7 +86,7 @@ static void delay(long int __millisSeconds)
 #endif // _MY_DELAY_H_
 ```
 
-## `simpleContainerOperator` 一个对元素为数字类型的 STL 容器进行测试的库
+## `simpleContainerOperator.h` 一个对元素为数字类型的 STL 容器进行测试的库
 
 主要是在一些针对 STL 容器或仿 STL 容器的编写、学习和测试中，不用重复的编写遍历，插入容器数据等操作，
 目前就只有两个函数（配合前两个库使用）：
@@ -145,6 +145,77 @@ void pushRandomValue(__Container &__container, int __limit, std::size_t __random
     for (std::size_t randomIndex = 0; randomIndex < __randomCount; ++randomIndex)
     {
         __container.push_back(std::rand() % __limit + __deviationVal);
+    }
+}
+```
+
+## `cinCheck.h` 一个对 `std::cin` 进行输入格式检查的库
+
+主要是为了防止使用 `>>` 运算符往 `std::cin` 发送数据时，因输入不符合数据类型导致的程序错误（比如意外终止或进入不一致状态），核心函数如下所示：
+
+```C++
+/**
+ * @brief 在对数字类型的数据使用 >> 运算符进行输入时，对标准输入流进行检查，
+ *        若不符合数据格式的输入（比如用户输入非数字字符）就清理标志位并忽略此次输入。
+ *
+ * @param __is              标准输入流的引用
+ * @param __errMessage      当出现意外输入时所报的错误消息
+ *
+ * @return 输入数据是否合规
+ */
+static inline bool istreamStateCheck(std::istream &__is, const std::string &__errMessage)
+{
+    using namespace MyLib::MyLoger;
+
+    if (__is.fail())
+    {
+        ERROR_LOG(__errMessage);
+
+        __is.clear();
+        __is.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * @brief 封装对数字类型输入格式和范围的检查，
+ *        用来过滤输入垃圾数据避免程序意外终止或进入不一致状态。
+ *
+ * @tparam DataType     输入数据的类型
+ * @tparam InputRule    用户为输入的数字范围所指定的规则，通常是 `Lamba` 表达式
+ *
+ * @param __is          标准输入流的引用
+ * @param __member      要输入的数据类型
+ * @param __messages    针对不同的情况输出的消息结构体，需要在外部实例化
+ * @param __rangeRule   为输入的数字范围所指定的规则
+ *
+ * @return non-return
+ */
+template <typename DataType, typename InputRule>
+static inline void istreamInputAndCheck(
+    std::istream &__is, DataType &__member,
+    const MessageStrings &__messages, InputRule __rangeRule)
+{
+    using namespace MyLib::MyLoger;
+    using MyDelay::delay;
+
+    while (true)
+    {
+        NOTIFY_LOG(__messages.promptMessage);
+        __is >> __member;
+
+        if (!istreamStateCheck(__is, __messages.errorMessage)){ delay(800); continue; }
+        if (!__rangeRule())
+        {
+            ERROR_LOG(__messages.outRangeMessage);
+            eatLine();
+            continue;
+        }
+
+        break;
     }
 }
 ```
