@@ -34,7 +34,7 @@ void testInputA(void)
 
     istreamInputAndCheck(
                             std::cin, number, messages, 
-                            [&number]() { return (number > 0 && number <= 100);}
+                            []( const decltype(number) & __num) { return (__num > 0 && __num <= 100);}
                         );
     
     CORRECT_LOG("Test Input A Pass!\n");
@@ -53,7 +53,7 @@ void testInputB(void)
 
     istreamInputAndCheck(
                             std::cin, number, messages, 
-                            [&number]() { return (number > 114514.1919810L && number <= 1919810.114514L);}
+                            []( const decltype(number) & __num) { return (__num > 114514.1919810L && __num <= 1919810.114514L);}
                         );
 
     CORRECT_LOG("Test Input B Pass!\n");
@@ -74,7 +74,7 @@ void testInputC(void)
 
     istreamInputAndCheck(
                             std::cin, number, messages, 
-                            [&number]() { return (number > 0 && number <= maxRange);}
+                            []( const decltype(number) & __num) { return (__num > 0 && __num <= maxRange);}
                         );
 
     CORRECT_LOG("Test Input C Pass!\n");
