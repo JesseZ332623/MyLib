@@ -190,14 +190,15 @@ static inline bool istreamStateCheck(std::istream &__is, const std::string &__er
  * @param __is          标准输入流的引用
  * @param __member      要输入的数据类型
  * @param __messages    针对不同的情况输出的消息结构体，需要在外部实例化
- * @param __rangeRule   为输入的数字范围所指定的规则
+ * @param __rangeRule   为输入的数字范围所指定的规则，默认情况下永远返回 true
  *
  * @return non-return
  */
-template <typename DataType, typename InputRule>
+template <typename DataType, typename InputRule = std::function<bool(DataType)>>
 static inline void istreamInputAndCheck(
-    std::istream &__is, DataType &__member,
-    const MessageStrings &__messages, InputRule __rangeRule)
+                    std::istream &__is, DataType &__member,
+                    const MessageStrings &__messages, InputRule __rangeRule = [](DataType) { return true; }
+                    )
 {
     using namespace MyLib::MyLoger;
     using MyDelay::delay;
@@ -207,8 +208,11 @@ static inline void istreamInputAndCheck(
         NOTIFY_LOG(__messages.promptMessage);
         __is >> __member;
 
-        if (!istreamStateCheck(__is, __messages.errorMessage)){ delay(800); continue; }
-        if (!__rangeRule())
+        if (!istreamStateCheck(__is, __messages.errorMessage))
+        {
+            delay(800); continue;
+        }
+        if (!__rangeRule(__member))
         {
             ERROR_LOG(__messages.outRangeMessage);
             eatLine();
