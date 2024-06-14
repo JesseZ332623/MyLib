@@ -4,5 +4,6 @@
 #include "./myDelay.h"
 #include "./simpleContainerOperator.h"
 #include "./myLogerDef.h"
+#include "./cinCheck.h"
 
 #endif // __MY_LIB_H__
