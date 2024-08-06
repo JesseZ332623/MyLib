@@ -5,5 +5,6 @@
 #include "./simpleContainerOperator.h"
 #include "./myLogerDef.h"
 #include "./cinCheck.h"
+#include "./cryption.h"
 
 #endif // __MY_LIB_H__
