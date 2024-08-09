@@ -2,8 +2,8 @@
 #define _CRYPTION_H__
 
 /**
- * ä½¿ç”¨ Crypto++ åŠ å¯†åº“ï¼Œ
- * æä¾›å¯¹å¯†ç å­—ç¬¦ä¸²è¿›è¡Œ AES åŠ å¯†è§£å¯†æ“ä½œã€‚
+ * Ê¹ÓÃ Crypto++ ¼ÓÃÜ¿â£¬
+ * Ìá¹©¶ÔÃÜÂë×Ö·û´®½øĞĞ AES ¼ÓÃÜ½âÃÜ²Ù×÷¡£
 */
 
 #include <cryptopp/modes.h>
@@ -14,83 +14,156 @@
 
 #include <MyLib/myLogerDef.h>
 #include <fstream>
+#include <cstring>
 
 namespace MyLib
 {
     namespace MyCryption
     {
         using namespace CryptoPP;
+
+        struct keys
+        {
+            byte key[AES::DEFAULT_KEYLENGTH];
+            byte randomVector[AES::BLOCKSIZE];
+
+            /**
+             * @brief ´ÓÖ¸¶¨ÎÄ¼şÖĞ¶ÁÈ¡²¢Ìî³ä¡£
+             * 
+             * @param __path    Ö¸¶¨Êı¾İÎÄ¼ş
+             */
+            void getToFile(const std::string & __path)
+            {
+                using std::ios_base;
+
+                std::ifstream ifs(__path, ios_base::binary);
+
+                if (!ifs.is_open() || !ifs)
+                {
+                    throw std::runtime_error("Can't open file " + __path + '\n');
+                }
+
+                ifs.read(reinterpret_cast<char *>(this->key), sizeof(this->key));
+                ifs.read(reinterpret_cast<char *>(this->randomVector), sizeof(this->randomVector));
+
+                ifs.close();
+            }
+
+            void clear(void) { std::memset(this, 0, sizeof(this->key) + sizeof(this->randomVector)); }
+        };
         class Cryption
         {
             private:
                 byte key[AES::DEFAULT_KEYLENGTH];
                 byte randomVector[AES::BLOCKSIZE];
                 AutoSeededRandomPool randSeedPool;
+
+                /**
+                 * @brief ½«ÃÜÔ¿ºÍÊ¸Á¿Ğ´ÈëÒ»¸öÊı¾İÎÄ¼ş¡£
+                 */
+                void writeDataToFile(const std::string & __path);
             
             public:
-                Cryption();
+                /**
+                 * @brief Ä¬ÈÏ¹¹Ôìº¯Êı£¬
+                 *        Éú³ÉËæ»úµÄÃÜÔ¿ºÍÊ¸Á¿£¬Ğ´ÈëÖ¸¶¨µÄÎÄ¼şÖĞÈ¥¡£
+                 * 
+                 * @param Ê¸Á¿ºÍÃÜÔ¿ÎÄ¼şÂ·¾¶
+                */
+                Cryption(const std::string & __dataPath);
+
+                /**
+                 * @brief ¹¹Ôìº¯Êı£¬½ÓÊÜÍâ²¿´«µİµÄÃÜÔ¿ºÍÊ¸Á¿£¬
+                 *        ÕâÔÚÍ³Ò»µÄ¼Ó½âÃÜ¹ı³ÌÖĞÓĞ´óÓÃ¡£
+                 * 
+                 * @param __key         ÃÜÔ¿
+                 * @param __randVec     Ê¸Á¿
+                */
+                Cryption(const byte * __key, const byte * __randVec);
                 
                 /**
-                 * @brief ä½¿ç”¨ AES ç®—æ³•åŠ å¯†å­—ç¬¦ä¸²
+                 * @brief Ê¹ÓÃ AES Ëã·¨¼ÓÃÜ×Ö·û´®
                  * 
-                 * @param __plainText   æ˜æ–‡
+                 * @param __plainText   Ã÷ÎÄ
                  * 
-                 * @return std::string  åŠ å¯†åçš„å¯†æ–‡
+                 * @return std::string  ¼ÓÃÜºóµÄÃÜÎÄ
                 */
                 std::string encryption(std::string & __plainText);
 
                 /**
-                 * @brief ä½¿ç”¨ AES ç®—æ³•åŠ å¯†å­—ç¬¦ä¸²
+                 * @brief Ê¹ÓÃ AES Ëã·¨¼ÓÃÜ×Ö·û´®
                  * 
-                 * @param __plainText   æ˜æ–‡ï¼ˆå¯ä»¥å¡«å…¥å­—ç¬¦ä¸²å¸¸é‡ï¼‰
+                 * @param __plainText   Ã÷ÎÄ£¨¿ÉÒÔÌîÈë×Ö·û´®³£Á¿£©
                  * 
-                 * @return std::string  åŠ å¯†åçš„å¯†æ–‡
+                 * @return std::string  ¼ÓÃÜºóµÄÃÜÎÄ
                 */
                 std::string encryption(std::string && __plainText);
 
                 /**
-                 * @brief ä½¿ç”¨ AES ç®—æ³•è§£å¯†å­—ç¬¦ä¸²å¯†æ–‡
+                 * @brief Ê¹ÓÃ AES Ëã·¨½âÃÜ×Ö·û´®ÃÜÎÄ
                  * 
-                 * @param __cipherText å¯†æ–‡
+                 * @param __cipherText ÃÜÎÄ
                  * 
-                 * @return std::string è§£å¯†åçš„æ˜æ–‡ 
+                 * @return std::string ½âÃÜºóµÄÃ÷ÎÄ 
                 */
                 std::string decryption(std::string & __cipherText);
 
                 /**
-                 * @brief ä½¿ç”¨ AES ç®—æ³•è§£å¯†å­—ç¬¦ä¸²å¯†æ–‡
+                 * @brief Ê¹ÓÃ AES Ëã·¨½âÃÜ×Ö·û´®ÃÜÎÄ
                  * 
-                 * @param __cipherText å¯†æ–‡ï¼ˆå¯ä»¥å¡«å…¥å­—ç¬¦ä¸²å¸¸é‡ï¼‰
+                 * @param __cipherText ÃÜÎÄ£¨¿ÉÒÔÌîÈë×Ö·û´®³£Á¿£©
                  * 
-                 * @return std::string è§£å¯†åçš„æ˜æ–‡ 
+                 * @return std::string ½âÃÜºóµÄÃ÷ÎÄ 
                 */
                 std::string decryption(std::string && __cipherText);
         };
 
         /**
-         * @brief å°†å¯†æ–‡å†™å…¥æ–‡ä»¶
+         * @brief ½«ÃÜÎÄĞ´ÈëÎÄ¼ş
          * 
-         * @param cipherText        åŠ å¯†åçš„å¯†æ–‡
-         * @param fileName          è¦å†™å…¥çš„æ–‡ä»¶
+         * @param cipherText        ¼ÓÃÜºóµÄÃÜÎÄ
+         * @param fileName          ÒªĞ´ÈëµÄÎÄ¼ş
          */
         void writeEncryptedDataToFile(const std::string &cipherText, const std::string &fileName);
 
         /**
-         * @brief ä»æŒ‡å®šæ•°æ®æ–‡ä»¶ä¸­è¯»å–å¯†æ–‡ï¼Œè¿”å›å¯†æ–‡å­—ç¬¦ä¸²
+         * @brief ´ÓÖ¸¶¨Êı¾İÎÄ¼şÖĞ¶ÁÈ¡ÃÜÎÄ£¬·µ»ØÃÜÎÄ×Ö·û´®
          */
         std::string readEncryptedDataFromFile(const std::string &fileName);
+
     }; // END namespace MyCryption
 
 };  // END namespace MyLib
 
-
-
-MyLib::MyCryption::Cryption::Cryption() : key(), randomVector()
+void MyLib::MyCryption::Cryption::writeDataToFile(const std::string & __path)
 {
-    using namespace MyLib::MyLoger;
+    using std::ios_base;
 
+    std::ofstream ofs(__path, ios_base::out | ios_base::binary);
+
+    if (!ofs.is_open() || !ofs)
+    {
+        throw std::runtime_error("Can't open file " + __path + '\n');
+    }
+
+    ofs.write(reinterpret_cast<char *>(this->key), sizeof(this->key));
+    ofs.write(reinterpret_cast<char *>(this->randomVector), sizeof(this->randomVector));
+
+    ofs.close();
+}
+
+MyLib::MyCryption::Cryption::Cryption(const std::string & __dataPath)
+{
     this->randSeedPool.GenerateBlock(this->key, sizeof(this->key));
     this->randSeedPool.GenerateBlock(this->randomVector, sizeof(randomVector));
+
+    this->writeDataToFile(__dataPath);
+}
+
+MyLib::MyCryption::Cryption::Cryption(const byte * __key, const byte * __randVec)
+{
+    std::memcpy(this->key, __key, sizeof(this->key));
+    std::memcpy(this->randomVector, __randVec, sizeof(this->randomVector));
 }
 
 std::string MyLib::MyCryption::Cryption::encryption(std::string & __plainText)
@@ -124,31 +197,9 @@ std::string MyLib::MyCryption::Cryption::encryption(std::string & __plainText)
 
 std::string MyLib::MyCryption::Cryption::encryption(std::string && __plainText)
 {
-    using namespace MyLib::MyLoger;
+    std::string plainText = std::move(__plainText);
 
-    std::string tempCipherText;
-
-    try
-    {
-        CBC_Mode<AES>::Encryption encryptor(
-            this->key, sizeof(this->key), this->randomVector
-        );
-
-        StringSource encryptionSource(
-            std::move(__plainText), true,
-            new StreamTransformationFilter(
-                encryptor, 
-                new HexEncoder(new StringSink(tempCipherText))
-            )
-        );
-    }
-    catch (const CryptoPP::Exception & __except)
-    {
-        ERROR_LOG(__except.what() + '\n');
-        tempCipherText.clear();
-    }
-
-    return tempCipherText;
+    return this->encryption(plainText);
 }
 
 std::string MyLib::MyCryption::Cryption::decryption(std::string & __cipherText)
@@ -183,37 +234,15 @@ std::string MyLib::MyCryption::Cryption::decryption(std::string & __cipherText)
 
 std::string MyLib::MyCryption::Cryption::decryption(std::string && __cipherText)
 {
-    using namespace MyLib::MyLoger;
+    std::string cipherText = std::move(__cipherText);
 
-    std::string tempPlainText;
-
-    try
-    {
-        CBC_Mode<AES>::Decryption decryptor(
-            this->key, sizeof(this->key), this->randomVector
-        );
-        
-        StringSource decryptionSource(
-            std::move(__cipherText), true,
-            new HexDecoder(
-                new StreamTransformationFilter(decryptor,
-                    new StringSink(tempPlainText)
-                )
-            )
-        );
-    }
-    catch (const CryptoPP::Exception & __except)
-    {
-        ERROR_LOG(__except.what() + '\n');
-        tempPlainText.clear();
-    }
-
-    return tempPlainText;
+    return this->decryption(cipherText);
 }
 
 void MyLib::MyCryption::writeEncryptedDataToFile(const std::string &cipherText, const std::string &fileName)
 {
     std::ofstream file(fileName, std::ios::binary);
+    
     if (!file.is_open())
     {
         std::cerr << "Failed to open file for writing." << std::endl;
@@ -236,7 +265,7 @@ std::string MyLib::MyCryption::readEncryptedDataFromFile(const std::string &file
     size_t length = file.tellg();
     file.seekg(0, std::ios::beg);
 
-    // åˆ›å»ºä¸€ä¸ªä¸´æ—¶å­—ç¬¦ä¸²ï¼Œæš‚æ—¶ç”¨ç©ºå­—ç¬¦å¡«å……
+    // ´´½¨Ò»¸öÁÙÊ±×Ö·û´®£¬ÔİÊ±ÓÃ¿Õ×Ö·ûÌî³ä
     std::string cipherText(length, '\0');
 
     file.read(&cipherText[0], length);
