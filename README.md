@@ -224,3 +224,91 @@ static inline void istreamInputAndCheck(
     }
 }
 ```
+
+## `cryption.h`: 封装了 `Crypto++` 库，对字符串进行 `AES` 加密解密
+
+库 API 如下：
+
+```C++
+class Cryption
+{
+private:
+    byte key[AES::DEFAULT_KEYLENGTH];
+    byte randomVector[AES::BLOCKSIZE];
+    AutoSeededRandomPool randSeedPool;
+
+    /**
+     * @brief 将密钥和矢量写入一个数据文件。
+     */
+    void writeDataToFile(const std::string &__path);
+
+public:
+    /**
+     * @brief 默认构造函数，
+     *        生成随机的密钥和矢量，写入指定的文件中去。
+     *
+     * @param 矢量和密钥文件路径
+     */
+    Cryption(const std::string &__dataPath);
+
+    /**
+     * @brief 构造函数，接受外部传递的密钥和矢量，
+     *        这在统一的加解密过程中有大用。
+     *
+     * @param __key         密钥
+     * @param __randVec     矢量
+     */
+    Cryption(const byte *__key, const byte *__randVec);
+
+    /**
+     * @brief 使用 AES 算法加密字符串
+     *
+     * @param __plainText   明文
+     *
+     * @return std::string  加密后的密文
+     */
+    std::string encryption(std::string &__plainText);
+
+    /**
+     * @brief 使用 AES 算法加密字符串
+     *
+     * @param __plainText   明文（可以填入字符串常量）
+     *
+     * @return std::string  加密后的密文
+     */
+    std::string encryption(std::string &&__plainText);
+
+    /**
+     * @brief 使用 AES 算法解密字符串密文
+     *
+     * @param __cipherText 密文
+     *
+     * @return std::string 解密后的明文
+     */
+    std::string decryption(std::string &__cipherText);
+
+    /**
+     * @brief 使用 AES 算法解密字符串密文
+     *
+     * @param __cipherText 密文（可以填入字符串常量）
+     *
+     * @return std::string 解密后的明文
+     */
+    std::string decryption(std::string &&__cipherText);
+};
+
+/**
+ * @brief 将密文写入文件
+ *
+ * @param cipherText        加密后的密文
+ * @param fileName          要写入的文件
+ */
+void writeEncryptedDataToFile(const std::string &cipherText, const std::string &fileName);
+
+/**
+ * @brief 从指定数据文件中读取密文，返回密文字符串
+ */
+std::string readEncryptedDataFromFile(const std::string &fileName);
+```
+
+详见：[cryption.h](https://github.com/JesseZ332623/MyLib/blob/master/cryption.h)
