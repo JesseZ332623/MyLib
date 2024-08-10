@@ -1,12 +1,11 @@
 #ifndef _SIMPLE_CONTAINER_OPERATOR_H_
 #define _SIMPLE_CONTAINER_OPERATOR_H_
 
-#include "./myDelay.h"
 #include "./myLogerDef.h"
 
-#include <iterator>
 #include <algorithm>
 #include <cstdlib>
+#include <random>
 
 namespace MyLib
 {
@@ -27,22 +26,20 @@ namespace MyLib
         void showContainerToStream(std::ostream & __os, const Container & __container, std::size_t __eachLineCount = 5)
         {
             using namespace MyLoger;
-            using MyDelay::delay;
 
-            loger(__os, NOTIFY, "This Container size = ", __container.size(), '\n');
+            //loger(__os, NOTIFY, "This Container size = ", __container.size(), '\n');
 
-            std::size_t containerIndex = 0L;
+            std::size_t containerIndex = 0ULL;
 
             std::for_each(__container.cbegin(), __container.cend(), 
-                        [& __os, &containerIndex, &__eachLineCount](const decltype((*__container.cbegin())) & n) 
+                        [&](const decltype((*__container.begin())) & n) 
                         { 
-                                __os << n << ' '; 
-                                delay(45); 
-                                if (containerIndex % __eachLineCount == __eachLineCount - 1) { __os << std::endl; }
-                                ++containerIndex;
+                            __os << n << ' '; 
+                            if (containerIndex % __eachLineCount == __eachLineCount - 1) { __os << std::endl; }
+                            ++containerIndex;
                         }
-                        );
-            __os << std::endl;
+                    );
+            //__os << std::endl;
         }
 
         /**
@@ -60,9 +57,31 @@ namespace MyLib
         template <typename __Container>
         void pushRandomValue(__Container & __container, int __limit, std::size_t __randomCount = 10, double __deviationVal = 0.0)
         {
-            for (std::size_t randomIndex = 0; randomIndex < __randomCount; ++randomIndex)
+            typedef typename __Container::value_type generate_type;
+
+            std::random_device randDevice;
+            std::mt19937_64    randEngine(randDevice());
+
+            /**
+             * 判断 generate_type 是整数类型还是小数类型（编译期）
+             */
+            if constexpr (std::is_integral_v<generate_type>)
+            { 
+                std::uniform_int_distribution<generate_type> randDistribute(0, __limit);
+
+                for (std::size_t randomIndex = 0; randomIndex < __randomCount; ++randomIndex)
+                {
+                    __container.push_back(randDistribute(randEngine) + __deviationVal);
+                } 
+            }
+            else 
             {
-                __container.push_back(std::rand() % __limit + __deviationVal);
+                std::uniform_real_distribution<generate_type> randDistribute(0, __limit);
+
+                for (std::size_t randomIndex = 0; randomIndex < __randomCount; ++randomIndex)
+                {
+                    __container.push_back(randDistribute(randEngine) + __deviationVal);
+                } 
             }
         }
     } // END namespace SimpleContainerOperator
