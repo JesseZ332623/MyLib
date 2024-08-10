@@ -2,8 +2,8 @@
 #define _CRYPTION_H__
 
 /**
- * Ê¹ÓÃ Crypto++ ¼ÓÃÜ¿â£¬
- * Ìá¹©¶ÔÃÜÂë×Ö·û´®½øĞĞ AES ¼ÓÃÜ½âÃÜ²Ù×÷¡£
+ * ä½¿ç”¨ Crypto++ åŠ å¯†åº“ï¼Œ
+ * æä¾›å¯¹å¯†ç å­—ç¬¦ä¸²è¿›è¡Œ AES åŠ å¯†è§£å¯†æ“ä½œã€‚
 */
 
 #include <cryptopp/modes.h>
@@ -28,9 +28,9 @@ namespace MyLib
             byte randomVector[AES::BLOCKSIZE];
 
             /**
-             * @brief ´ÓÖ¸¶¨ÎÄ¼şÖĞ¶ÁÈ¡²¢Ìî³ä¡£
+             * @brief ä»æŒ‡å®šæ–‡ä»¶ä¸­è¯»å–å¹¶å¡«å……ã€‚
              * 
-             * @param __path    Ö¸¶¨Êı¾İÎÄ¼ş
+             * @param __path    æŒ‡å®šæ•°æ®æ–‡ä»¶
              */
             void getToFile(const std::string & __path)
             {
@@ -59,75 +59,75 @@ namespace MyLib
                 AutoSeededRandomPool randSeedPool;
 
                 /**
-                 * @brief ½«ÃÜÔ¿ºÍÊ¸Á¿Ğ´ÈëÒ»¸öÊı¾İÎÄ¼ş¡£
+                 * @brief å°†å¯†é’¥å’ŒçŸ¢é‡å†™å…¥ä¸€ä¸ªæ•°æ®æ–‡ä»¶ã€‚
                  */
                 void writeDataToFile(const std::string & __path);
             
             public:
                 /**
-                 * @brief Ä¬ÈÏ¹¹Ôìº¯Êı£¬
-                 *        Éú³ÉËæ»úµÄÃÜÔ¿ºÍÊ¸Á¿£¬Ğ´ÈëÖ¸¶¨µÄÎÄ¼şÖĞÈ¥¡£
+                 * @brief é»˜è®¤æ„é€ å‡½æ•°ï¼Œ
+                 *        ç”Ÿæˆéšæœºçš„å¯†é’¥å’ŒçŸ¢é‡ï¼Œå†™å…¥æŒ‡å®šçš„æ–‡ä»¶ä¸­å»ã€‚
                  * 
-                 * @param Ê¸Á¿ºÍÃÜÔ¿ÎÄ¼şÂ·¾¶
+                 * @param çŸ¢é‡å’Œå¯†é’¥æ–‡ä»¶è·¯å¾„
                 */
                 Cryption(const std::string & __dataPath);
 
                 /**
-                 * @brief ¹¹Ôìº¯Êı£¬½ÓÊÜÍâ²¿´«µİµÄÃÜÔ¿ºÍÊ¸Á¿£¬
-                 *        ÕâÔÚÍ³Ò»µÄ¼Ó½âÃÜ¹ı³ÌÖĞÓĞ´óÓÃ¡£
+                 * @brief æ„é€ å‡½æ•°ï¼Œæ¥å—å¤–éƒ¨ä¼ é€’çš„å¯†é’¥å’ŒçŸ¢é‡ï¼Œ
+                 *        è¿™åœ¨ç»Ÿä¸€çš„åŠ è§£å¯†è¿‡ç¨‹ä¸­æœ‰å¤§ç”¨ã€‚
                  * 
-                 * @param __key         ÃÜÔ¿
-                 * @param __randVec     Ê¸Á¿
+                 * @param __key         å¯†é’¥
+                 * @param __randVec     çŸ¢é‡
                 */
                 Cryption(const byte * __key, const byte * __randVec);
                 
                 /**
-                 * @brief Ê¹ÓÃ AES Ëã·¨¼ÓÃÜ×Ö·û´®
+                 * @brief ä½¿ç”¨ AES ç®—æ³•åŠ å¯†å­—ç¬¦ä¸²
                  * 
-                 * @param __plainText   Ã÷ÎÄ
+                 * @param __plainText   æ˜æ–‡
                  * 
-                 * @return std::string  ¼ÓÃÜºóµÄÃÜÎÄ
+                 * @return std::string  åŠ å¯†åçš„å¯†æ–‡
                 */
                 std::string encryption(std::string & __plainText);
 
                 /**
-                 * @brief Ê¹ÓÃ AES Ëã·¨¼ÓÃÜ×Ö·û´®
+                 * @brief ä½¿ç”¨ AES ç®—æ³•åŠ å¯†å­—ç¬¦ä¸²
                  * 
-                 * @param __plainText   Ã÷ÎÄ£¨¿ÉÒÔÌîÈë×Ö·û´®³£Á¿£©
+                 * @param __plainText   æ˜æ–‡ï¼ˆå¯ä»¥å¡«å…¥å­—ç¬¦ä¸²å¸¸é‡ï¼‰
                  * 
-                 * @return std::string  ¼ÓÃÜºóµÄÃÜÎÄ
+                 * @return std::string  åŠ å¯†åçš„å¯†æ–‡
                 */
                 std::string encryption(std::string && __plainText);
 
                 /**
-                 * @brief Ê¹ÓÃ AES Ëã·¨½âÃÜ×Ö·û´®ÃÜÎÄ
+                 * @brief ä½¿ç”¨ AES ç®—æ³•è§£å¯†å­—ç¬¦ä¸²å¯†æ–‡
                  * 
-                 * @param __cipherText ÃÜÎÄ
+                 * @param __cipherText å¯†æ–‡
                  * 
-                 * @return std::string ½âÃÜºóµÄÃ÷ÎÄ 
+                 * @return std::string è§£å¯†åçš„æ˜æ–‡ 
                 */
                 std::string decryption(std::string & __cipherText);
 
                 /**
-                 * @brief Ê¹ÓÃ AES Ëã·¨½âÃÜ×Ö·û´®ÃÜÎÄ
+                 * @brief ä½¿ç”¨ AES ç®—æ³•è§£å¯†å­—ç¬¦ä¸²å¯†æ–‡
                  * 
-                 * @param __cipherText ÃÜÎÄ£¨¿ÉÒÔÌîÈë×Ö·û´®³£Á¿£©
+                 * @param __cipherText å¯†æ–‡ï¼ˆå¯ä»¥å¡«å…¥å­—ç¬¦ä¸²å¸¸é‡ï¼‰
                  * 
-                 * @return std::string ½âÃÜºóµÄÃ÷ÎÄ 
+                 * @return std::string è§£å¯†åçš„æ˜æ–‡ 
                 */
                 std::string decryption(std::string && __cipherText);
         };
 
         /**
-         * @brief ½«ÃÜÎÄĞ´ÈëÎÄ¼ş
+         * @brief å°†å¯†æ–‡å†™å…¥æ–‡ä»¶
          * 
-         * @param cipherText        ¼ÓÃÜºóµÄÃÜÎÄ
-         * @param fileName          ÒªĞ´ÈëµÄÎÄ¼ş
+         * @param cipherText        åŠ å¯†åçš„å¯†æ–‡
+         * @param fileName          è¦å†™å…¥çš„æ–‡ä»¶
          */
         void writeEncryptedDataToFile(const std::string &cipherText, const std::string &fileName);
 
         /**
-         * @brief ´ÓÖ¸¶¨Êı¾İÎÄ¼şÖĞ¶ÁÈ¡ÃÜÎÄ£¬·µ»ØÃÜÎÄ×Ö·û´®
+         * @brief ä»æŒ‡å®šæ•°æ®æ–‡ä»¶ä¸­è¯»å–å¯†æ–‡ï¼Œè¿”å›å¯†æ–‡å­—ç¬¦ä¸²
          */
         std::string readEncryptedDataFromFile(const std::string &fileName);
 
@@ -265,7 +265,7 @@ std::string MyLib::MyCryption::readEncryptedDataFromFile(const std::string &file
     size_t length = file.tellg();
     file.seekg(0, std::ios::beg);
 
-    // ´´½¨Ò»¸öÁÙÊ±×Ö·û´®£¬ÔİÊ±ÓÃ¿Õ×Ö·ûÌî³ä
+    // åˆ›å»ºä¸€ä¸ªä¸´æ—¶å­—ç¬¦ä¸²ï¼Œæš‚æ—¶ç”¨ç©ºå­—ç¬¦å¡«å……
     std::string cipherText(length, '\0');
 
     file.read(&cipherText[0], length);
