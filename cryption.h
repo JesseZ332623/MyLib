@@ -197,7 +197,7 @@ std::string MyLib::MyCryption::Cryption::encryption(std::string & __plainText)
 
 std::string MyLib::MyCryption::Cryption::encryption(std::string && __plainText)
 {
-    std::string plainText = std::move(__plainText);
+    std::string plainText(__plainText);
 
     return this->encryption(plainText);
 }
@@ -234,7 +234,7 @@ std::string MyLib::MyCryption::Cryption::decryption(std::string & __cipherText)
 
 std::string MyLib::MyCryption::Cryption::decryption(std::string && __cipherText)
 {
-    std::string cipherText = std::move(__cipherText);
+    std::string cipherText(__cipherText);
 
     return this->decryption(cipherText);
 }
